@@ -1,0 +1,7 @@
+set(ASSIMP_LIB_NAME "assimp")
+set(ASSIMP_INCLUDE_PATH "${CMAKE_CURRENT_LIST_DIR}/${ASSIMP_LIB_NAME}/include")
+
+set(ASSIMP_BUILD_TESTS  OFF CACHE INTERNAL "" FORCE)
+add_subdirectory("${ASSIMP_LIB_NAME}")
+
+set_target_properties("${ASSIMP_LIB_NAME}" PROPERTIES FOLDER "${LIB_DIR}")
