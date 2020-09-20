@@ -1,61 +1,46 @@
-#include <stdio.h>
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <stb_image.h>
 #include <imgui.h>
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
 
-#include "shader.hpp"
-#include "camera.hpp"
+#include "common.hpp"
+#include "demos/demo.hpp"
+#include "demos/triangleDemo.hpp"
+#include "demos/boxesDemo.hpp"
 
-static void glfw_error_callback(int error, const char* description);
-static void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-static void processInput(GLFWwindow *window);
 
-static GLuint load_texture(const std::string& path);
-static void draw();
+Demo *demo;
 
-// settings
-const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 720;
-
-// camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = true;
-
-// timing
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
-
-// lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
-static void processInput(GLFWwindow *window)
+static void printDebugInfo()
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    // Print graphics driver vendor and OpenGL information
+    const GLubyte *renderer = glGetString( GL_RENDERER ); 
+    const GLubyte *vendor = glGetString( GL_VENDOR ); 
+    const GLubyte *version = glGetString( GL_VERSION ); 
+    const GLubyte *glslVersion = 
+        glGetString( GL_SHADING_LANGUAGE_VERSION ); 
+    
+    GLint major, minor; 
+    glGetIntegerv(GL_MAJOR_VERSION, &major); 
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+    
+    printf("GL Vendor            : %s\n", vendor); 
+    printf("GL Renderer          : %s\n", renderer); 
+    printf("GL Version (string)  : %s\n", version); 
+    printf("GL Version (integer) : %d.%d\n", major, minor); 
+    printf("GLSL Version         : %s\n", glslVersion);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+    // Extension information
+    GLint nExtensions; 
+    glGetIntegerv(GL_NUM_EXTENSIONS, &nExtensions); 
+    
+    for( int i = 0; i < nExtensions; i++ ) 
+        printf("%s\n", glGetStringi( GL_EXTENSIONS, i ) );
 }
 
 int main(int, char**)
@@ -100,30 +85,6 @@ int main(int, char**)
     // Viewport
     glViewport(0, 0, 1280, 720);
 
-    // // Print graphics driver vendor and OpenGL information
-    // const GLubyte *renderer = glGetString( GL_RENDERER ); 
-    // const GLubyte *vendor = glGetString( GL_VENDOR ); 
-    // const GLubyte *version = glGetString( GL_VERSION ); 
-    // const GLubyte *glslVersion = 
-    //     glGetString( GL_SHADING_LANGUAGE_VERSION ); 
-    
-    // GLint major, minor; 
-    // glGetIntegerv(GL_MAJOR_VERSION, &major); 
-    // glGetIntegerv(GL_MINOR_VERSION, &minor);
-    
-    // printf("GL Vendor            : %s\n", vendor); 
-    // printf("GL Renderer          : %s\n", renderer); 
-    // printf("GL Version (string)  : %s\n", version); 
-    // printf("GL Version (integer) : %d.%d\n", major, minor); 
-    // printf("GLSL Version         : %s\n", glslVersion);
-
-    // // Extension information
-    // GLint nExtensions; 
-    // glGetIntegerv(GL_NUM_EXTENSIONS, &nExtensions); 
-    
-    // for( int i = 0; i < nExtensions; i++ ) 
-    //     printf("%s\n", glGetStringi( GL_EXTENSIONS, i ) );
-
     glEnable(GL_DEPTH_TEST);
 
     // Setup Dear ImGui context
@@ -161,177 +122,12 @@ int main(int, char**)
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    // Shader
-    Shader ourShader("../assets/basic.vert.glsl", "../assets/basic.frag.glsl");
-
-    // Load texture
-    unsigned int texture = load_texture("../assets/wall.jpg");
-
-    // GLuint vaoHandle;
-    // // Draw triangle
-    // float positionData[] = { 
-    //     0.5f, 0.5f, 0.0f, // top right
-    //     0.5f, -0.5f, 0.0f, // bottom right
-    //     -0.5f, -0.5f, 0.0f, // bottom left
-    //     -0.5f, 0.5f, 0.0f // top left
-    //     }; 
-    // float colorData[] = { 
-    //     1.0f, 0.0f, 0.0f, 
-    //     0.0f, 1.0f, 0.0f, 
-    //     0.0f, 0.0f, 1.0f,
-    //     0.0f, 1.0f, 1.0f
-    // };
-    // float texData[] = { 
-    //     1.0f, 1.0f,
-    //     1.0f, 0.0f,
-    //     0.0f, 0.0f,
-    //     0.0f, 1.0f
-    // };
-    // unsigned int indices[] = { // note that we start from 0!
-    //     0, 1, 3, // first triangle
-    //     1, 2, 3 // second triangle
-    // };
-    
-    // // Create and populate the buffer objects 
-    // GLuint vboHandles[3]; 
-    // glGenBuffers(3, vboHandles); 
-    // GLuint positionBufferHandle = vboHandles[0]; 
-    // GLuint colorBufferHandle = vboHandles[1];
-    // GLuint texBufferHandle = vboHandles[2];
-    
-    // // Populate the position buffer 
-    // glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle); 
-    // glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), 
-    //     positionData, GL_STATIC_DRAW); 
-    
-    // // Populate the color buffer 
-    // glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle); 
-    // glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), colorData, 
-    //     GL_STATIC_DRAW);
-
-    // // Populate the texture coords buffer 
-    // glBindBuffer(GL_ARRAY_BUFFER, texBufferHandle); 
-    // glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), texData, 
-    //     GL_STATIC_DRAW);
-
-    // // Create and set-up the vertex array object 
-    // glGenVertexArrays( 1, &vaoHandle ); 
-    // glBindVertexArray(vaoHandle); 
-    
-    // // Enable the vertex attribute arrays 
-    // glEnableVertexAttribArray(0);  // Vertex position 
-    // glEnableVertexAttribArray(1);  // Vertex color
-    // glEnableVertexAttribArray(2);  // Tex Coords 
-    
-    // // Map index 0 to the position buffer 
-    // glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle); 
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); 
-    
-    // // Map index 1 to the color buffer 
-    // glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle); 
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-    // // Map index 2 to the texture buffer 
-    // glBindBuffer(GL_ARRAY_BUFFER, texBufferHandle); 
-    // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-    // // Index buffer
-    // unsigned int EBO;   
-    // glGenBuffers(1, &EBO);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
-    };
-    // world space positions of our cubes
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f),
-        glm::vec3( 2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f,  2.0f, -2.5f),
-        glm::vec3( 1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // color attribute
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    // texture coord attribute
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(9 * sizeof(float)));
-    glEnableVertexAttribArray(3);
-
-
-    ourShader.use();
-    ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    ourShader.setVec3("lightPos", lightPos);
-    ourShader.setVec3("viewPos", camera.getPosition());
+    demo = new TriangleDemo();
+    demo->Init(window);
 
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
-        // --------------------
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -343,7 +139,8 @@ int main(int, char**)
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
-        processInput(window);
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -394,70 +191,14 @@ int main(int, char**)
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        ourShader.use();
-        ourShader.setVec3("viewPos", camera.getPosition());
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-
-        ourShader.use();
-
-        // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        ourShader.setMat4("projection", projection);
-
-        // camera/view transformation
-        glm::mat4 view = camera.GetViewMatrix();
-        ourShader.setMat4("view", view);
-
-        float angle = 3.1415f / 3;
-        glm::mat4 model = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f,0.0f,1.0f));
-
-        // GLuint location = glGetUniformLocation(programHandle, "model"); 
-        // if( location >= 0 ) { 
-        //     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model)); 
-        // }
-        ourShader.setMat4("model", model);
-
-        // Wireframe mode
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-        // glBindVertexArray(vaoHandle); // VAO keeps the EBO
-        // // glDrawArrays(GL_TRIANGLES, 0, 3 );
-        // // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-        // // square
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        // // triangle
-        // // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-
-        // render boxes
-        glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            // calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            ourShader.setMat4("model", model);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        demo->Draw(window);
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
     }
 
-    // glDeleteVertexArrays(1, &vaoHandle);
-    // glDeleteBuffers(1, &vboHandles[0]);
-    // glDeleteBuffers(1, &vboHandles[1]);
-    // glDeleteBuffers(1, &vboHandles[2]);
-
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    demo->Unload();
 
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -467,18 +208,9 @@ int main(int, char**)
     glfwDestroyWindow(window);
     glfwTerminate();
 
+    delete demo;
+
     return 0;
-}
-
-static void glfw_error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-    exit(EXIT_FAILURE);
-}
-
-static void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
 }
 
 static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -490,47 +222,16 @@ static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos)
         firstMouse = false;
     }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    float offsetX = xpos - lastX;
+    float offsetY = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    demo->processMouse(window, xpos, ypos, offsetX, offsetY);
 }
 
 static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
-}
-
-static GLuint load_texture(const std::string& path)
-{
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load and generate the texture
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-    return texture;
-}
-
-static void draw()
-{
-
+    demo->processScroll(window, xoffset, yoffset);
 }

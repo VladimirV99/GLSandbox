@@ -17,7 +17,7 @@ std::string Shader::loadAsString(const std::string& path) {
     }
     catch(std::ifstream::failure e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << "Error reading file " << path << std::endl;
         exit(EXIT_FAILURE);
     }
     return "";
