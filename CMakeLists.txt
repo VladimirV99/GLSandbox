@@ -21,6 +21,8 @@ set(SOURCES
     "${SRC_PATH}/demos/triangleDemo.cpp"
     "${SRC_PATH}/demos/boxesDemo.hpp"
     "${SRC_PATH}/demos/boxesDemo.cpp"
+    "${SRC_PATH}/demos/normalMapDemo.hpp"
+    "${SRC_PATH}/demos/normalMapDemo.cpp"
 )
 
 # Executable definition and properties
