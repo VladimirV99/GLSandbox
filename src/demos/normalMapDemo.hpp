@@ -19,6 +19,7 @@ public:
     void processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
     void processScroll(GLFWwindow* window, double xoffset, double yoffset) override;
 private:
+    void renderQuad();
     void processInput(GLFWwindow *window);
 private:
     Shader shader;
@@ -29,8 +30,8 @@ private:
     // lighting
     glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-    unsigned int VBO, VAO;
-    unsigned int texture;
+    unsigned int VBO, VAO = 0;
+    unsigned int diffuseMap, normalMap;
 };
 
 #endif
