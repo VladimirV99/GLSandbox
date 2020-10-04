@@ -85,11 +85,15 @@ void TriangleDemo::Draw(GLFWwindow* window)
     // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glBindVertexArray(vaoHandle); // VAO keeps the EBO
-    glDrawArrays(GL_TRIANGLES, 0, 3 );
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
+    // Draw without index (element) buffer
+    // triangle
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    // Draw with index (element) buffer
     // square
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // triangle
     // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
