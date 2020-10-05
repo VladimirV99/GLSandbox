@@ -78,11 +78,9 @@ void TriangleDemo::Init(GLFWwindow* window)
 
 void TriangleDemo::Draw(GLFWwindow* window)
 {
-    shader.use();
+    processInput(window);
 
-    // Wireframe mode
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    shader.use();
 
     glBindVertexArray(vaoHandle); // VAO keeps the EBO
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -98,10 +96,26 @@ void TriangleDemo::Draw(GLFWwindow* window)
     // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
+void TriangleDemo::processInput(GLFWwindow *window)
+{
+    fill_mode_prev = fill_mode;
+    fill_mode = glfwGetKey(window, GLFW_KEY_1);
+    if(fill_mode != fill_mode_prev && fill_mode == GLFW_RELEASE)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // Wireframe mode
+    line_mode_prev = line_mode;
+    line_mode = glfwGetKey(window, GLFW_KEY_2);
+    if(line_mode != line_mode_prev && line_mode == GLFW_RELEASE)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
 void TriangleDemo::Unload()
 {
     glDeleteVertexArrays(1, &vaoHandle);
     glDeleteBuffers(1, &vboHandles[0]);
     glDeleteBuffers(1, &vboHandles[1]);
     glDeleteBuffers(1, &vboHandles[2]);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
