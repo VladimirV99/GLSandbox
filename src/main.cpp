@@ -118,6 +118,10 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+    int capture_cursor_key_prev = GLFW_RELEASE;
+    int capture_cursor_key = GLFW_RELEASE;
+    bool capture_cursor = true;
+
     // Our state
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -141,6 +145,25 @@ int main(int, char**)
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
+        capture_cursor_key_prev = capture_cursor_key;
+        capture_cursor_key  = glfwGetKey(window, GLFW_KEY_F);
+        if(capture_cursor_key != capture_cursor_key_prev && capture_cursor_key == GLFW_RELEASE)
+        {
+            capture_cursor = !capture_cursor;
+            if(capture_cursor)
+            {
+                firstMouse = true;
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                glfwSetCursorPosCallback(window, glfw_mouse_callback);
+                glfwSetScrollCallback(window, glfw_scroll_callback);
+            }
+            else
+            {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                glfwSetCursorPosCallback(window, NULL);
+                glfwSetScrollCallback(window, NULL);
+            }
+        }
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
