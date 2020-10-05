@@ -15,7 +15,7 @@
 static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-Demo *demo;
+Demo *demo = nullptr;
 
 static void printDebugInfo()
 {
@@ -42,6 +42,14 @@ static void printDebugInfo()
     
     for( int i = 0; i < nExtensions; i++ ) 
         printf("%s\n", glGetStringi( GL_EXTENSIONS, i ) );
+}
+
+void switchDemo(Demo *d, GLFWwindow* window)
+{
+    demo->Unload();
+    delete demo;
+    demo = d;
+    demo->Init(window);
 }
 
 int main(int, char**)
@@ -170,27 +178,28 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow())
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        // Init ImGui window
         {
-            static float f = 0.0f;
-            static int counter = 0;
+            ImGui::Begin("Demo select");
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Checkbox("Demo Window", &show_demo_window);
+            ImGui::ColorEdit3("clear color", (float*)&clear_color);
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Separator();
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            if (ImGui::Button("Triangle Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new TriangleDemo(), window);
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+            if (ImGui::Button("Boxes Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new BoxesDemo(), window);
+
+            if (ImGui::Button("Normal Map Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new NormalMapDemo(), window);
+
+            ImGui::Separator();
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
@@ -209,9 +218,9 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
+    // Cleanup
     demo->Unload();
 
-    // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
