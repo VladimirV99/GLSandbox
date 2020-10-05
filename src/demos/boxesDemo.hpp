@@ -25,9 +25,6 @@ private:
 
     // camera
     Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
-    float lastX = SCR_WIDTH / 2.0f;
-    float lastY = SCR_HEIGHT / 2.0f;
-    bool firstMouse = true;
 
     // lighting
     glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);

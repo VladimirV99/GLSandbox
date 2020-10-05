@@ -83,8 +83,6 @@ void BoxesDemo::Init(GLFWwindow* window)
 void BoxesDemo::Draw(GLFWwindow* window)
 {
     processInput(window);
-    // camera.ProcessMouseMovement(deltaX, deltaY);
-    // camera.ProcessMouseScroll(scrollY);
     
     // world space positions of our cubes
     glm::vec3 cubePositions[] = {
@@ -142,6 +140,8 @@ void BoxesDemo::Draw(GLFWwindow* window)
 
 void BoxesDemo::Unload()
 {
+    glDeleteTextures(1, &texture);
+
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
