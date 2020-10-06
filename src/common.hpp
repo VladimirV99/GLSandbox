@@ -25,6 +25,6 @@ extern bool firstMouse;
 extern void glfw_error_callback(int error, const char* description);
 extern void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-extern GLuint load_texture(const std::string& path);
+extern GLuint load_texture(const std::string& path, bool gammaCorrection = false);
 
 #endif
