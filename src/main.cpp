@@ -127,9 +127,9 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
-    int capture_cursor_key_prev = GLFW_RELEASE;
-    int capture_cursor_key = GLFW_RELEASE;
-    bool capture_cursor = true;
+    int capture_input_key_prev = GLFW_RELEASE;
+    int capture_input_key = GLFW_RELEASE;
+    bool capture_input = true;
 
     // Our state
     bool show_demo_window = true;
@@ -154,12 +154,12 @@ int main(int, char**)
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
-        capture_cursor_key_prev = capture_cursor_key;
-        capture_cursor_key  = glfwGetKey(window, GLFW_KEY_F);
-        if(capture_cursor_key != capture_cursor_key_prev && capture_cursor_key == GLFW_RELEASE)
+        capture_input_key_prev = capture_input_key;
+        capture_input_key  = glfwGetKey(window, GLFW_KEY_F);
+        if(capture_input_key != capture_input_key_prev && capture_input_key == GLFW_RELEASE)
         {
-            capture_cursor = !capture_cursor;
-            if(capture_cursor)
+            capture_input = !capture_input;
+            if(capture_input)
             {
                 firstMouse = true;
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -188,7 +188,7 @@ int main(int, char**)
         {
             ImGui::Begin("Demo select");
 
-            ImGui::Text("Press F to toggle cursor capture");
+            ImGui::Text("Press F to toggle input capture");
 
             ImGui::Checkbox("Demo Window", &show_demo_window);
             ImGui::ColorEdit3("clear color", (float*)&clear_color);
@@ -212,6 +212,9 @@ int main(int, char**)
 
         // Rendering
         ImGui::Render();
+
+        if(capture_input)
+            demo->processKeyboard(window);
 
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

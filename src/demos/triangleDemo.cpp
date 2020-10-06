@@ -78,8 +78,6 @@ void TriangleDemo::Init(GLFWwindow* window)
 
 void TriangleDemo::Draw(GLFWwindow* window)
 {
-    processInput(window);
-
     shader.use();
 
     glBindVertexArray(vaoHandle); // VAO keeps the EBO
@@ -96,7 +94,7 @@ void TriangleDemo::Draw(GLFWwindow* window)
     // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
-void TriangleDemo::processInput(GLFWwindow *window)
+void TriangleDemo::processKeyboard(GLFWwindow *window)
 {
     fill_mode_prev = fill_mode;
     fill_mode = glfwGetKey(window, GLFW_KEY_1);

@@ -16,11 +16,11 @@ public:
     void Init(GLFWwindow* window) override;
     void Draw(GLFWwindow* window) override;
     void Unload() override;
+    void processKeyboard(GLFWwindow *window) override;
     void processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
     void processScroll(GLFWwindow* window, double xoffset, double yoffset) override;
 private:
     void renderQuad();
-    void processInput(GLFWwindow *window);
 private:
     Shader shader;
 
