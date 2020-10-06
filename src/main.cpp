@@ -15,7 +15,7 @@
 static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-Demo *demo;
+Demo *demo = nullptr;
 
 static void printDebugInfo()
 {
@@ -42,6 +42,14 @@ static void printDebugInfo()
     
     for( int i = 0; i < nExtensions; i++ ) 
         printf("%s\n", glGetStringi( GL_EXTENSIONS, i ) );
+}
+
+void switchDemo(Demo *d, GLFWwindow* window)
+{
+    demo->Unload();
+    delete demo;
+    demo = d;
+    demo->Init(window);
 }
 
 int main(int, char**)
@@ -92,6 +100,7 @@ int main(int, char**)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -118,6 +127,10 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+    int capture_input_key_prev = GLFW_RELEASE;
+    int capture_input_key = GLFW_RELEASE;
+    bool capture_input = true;
+
     // Our state
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -141,33 +154,57 @@ int main(int, char**)
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
+        capture_input_key_prev = capture_input_key;
+        capture_input_key  = glfwGetKey(window, GLFW_KEY_F);
+        if(capture_input_key != capture_input_key_prev && capture_input_key == GLFW_RELEASE)
+        {
+            capture_input = !capture_input;
+            if(capture_input)
+            {
+                firstMouse = true;
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                glfwSetCursorPosCallback(window, glfw_mouse_callback);
+                glfwSetScrollCallback(window, glfw_scroll_callback);
+                io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+            }
+            else
+            {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                glfwSetCursorPosCallback(window, NULL);
+                glfwSetScrollCallback(window, NULL);
+                io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+            }
+        }
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow())
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        // Init ImGui window
         {
-            static float f = 0.0f;
-            static int counter = 0;
+            ImGui::Begin("Demo select");
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Text("Press F to toggle input capture");
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Demo Window", &show_demo_window);
+            ImGui::ColorEdit3("clear color", (float*)&clear_color);
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            ImGui::Separator();
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+            if (ImGui::Button("Triangle Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new TriangleDemo(), window);
+
+            if (ImGui::Button("Boxes Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new BoxesDemo(), window);
+
+            if (ImGui::Button("Normal Map Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new NormalMapDemo(), window);
+
+            ImGui::Separator();
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
@@ -175,6 +212,9 @@ int main(int, char**)
 
         // Rendering
         ImGui::Render();
+
+        if(capture_input)
+            demo->processKeyboard(window);
 
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -186,9 +226,9 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
+    // Cleanup
     demo->Unload();
 
-    // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

@@ -81,9 +81,7 @@ void BoxesDemo::Init(GLFWwindow* window)
 }
 
 void BoxesDemo::Draw(GLFWwindow* window)
-{
-    processInput(window);
-    
+{    
     // world space positions of our cubes
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f),
@@ -146,7 +144,7 @@ void BoxesDemo::Unload()
     glDeleteBuffers(1, &VBO);
 }
 
-void BoxesDemo::processInput(GLFWwindow *window)
+void BoxesDemo::processKeyboard(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
