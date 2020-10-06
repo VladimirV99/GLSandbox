@@ -100,6 +100,7 @@ int main(int, char**)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -164,12 +165,14 @@ int main(int, char**)
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                 glfwSetCursorPosCallback(window, glfw_mouse_callback);
                 glfwSetScrollCallback(window, glfw_scroll_callback);
+                io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
             }
             else
             {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
                 glfwSetCursorPosCallback(window, NULL);
                 glfwSetScrollCallback(window, NULL);
+                io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
             }
         }
 
@@ -184,6 +187,8 @@ int main(int, char**)
         // Init ImGui window
         {
             ImGui::Begin("Demo select");
+
+            ImGui::Text("Press F to toggle cursor capture");
 
             ImGui::Checkbox("Demo Window", &show_demo_window);
             ImGui::ColorEdit3("clear color", (float*)&clear_color);
