@@ -23,6 +23,8 @@ set(SOURCES
     "${SRC_PATH}/demos/boxesDemo.cpp"
     "${SRC_PATH}/demos/normalMapDemo.hpp"
     "${SRC_PATH}/demos/normalMapDemo.cpp"
+    "${SRC_PATH}/demos/hdrBloomDemo.hpp"
+    "${SRC_PATH}/demos/hdrBloomDemo.cpp"
 )
 
 # Executable definition and properties

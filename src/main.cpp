@@ -11,6 +11,7 @@
 #include "demos/triangleDemo.hpp"
 #include "demos/boxesDemo.hpp"
 #include "demos/normalMapDemo.hpp"
+#include "demos/hdrBloomDemo.hpp"
 
 static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -203,6 +204,9 @@ int main(int, char**)
 
             if (ImGui::Button("Normal Map Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
                 switchDemo(new NormalMapDemo(), window);
+
+            if (ImGui::Button("HDR Bloom Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new HdrBloomDemo(), window);
 
             ImGui::Separator();
 
