@@ -30,7 +30,6 @@ void HdrBloomDemo::Init(GLFWwindow* window)
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
     }
     // create and attach depth buffer (renderbuffer)
-    unsigned int rboDepth;
     glGenRenderbuffers(1, &rboDepth);
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
@@ -288,7 +287,19 @@ void HdrBloomDemo::renderQuad()
 
 void HdrBloomDemo::Unload()
 {
-    
+    glDeleteTextures(1, &woodTexture);
+    glDeleteTextures(1, &containerTexture);
+
+    glDeleteVertexArrays(1, &quadVAO);
+    glDeleteBuffers(1, &quadVBO);
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &cubeVBO);
+
+    glDeleteFramebuffers(1, &hdrFBO);
+    glDeleteTextures(2, colorBuffers);
+    glDeleteRenderbuffers(1, &rboDepth);
+    glDeleteFramebuffers(2, pingpongFBO);
+    glDeleteTextures(2, pingpongColorbuffers);
 }
 
 void HdrBloomDemo::processKeyboard(GLFWwindow *window)

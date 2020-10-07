@@ -39,6 +39,7 @@ private:
     unsigned int woodTexture, containerTexture;
     unsigned int hdrFBO;
     unsigned int colorBuffers[2];
+    unsigned int rboDepth;
     unsigned int pingpongFBO[2];
     unsigned int pingpongColorbuffers[2];
 
