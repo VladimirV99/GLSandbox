@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
 
 #include "demo.hpp"
 #include "../common.hpp"
@@ -19,6 +20,7 @@ public:
     void processKeyboard(GLFWwindow *window) override;
     void processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
     void processScroll(GLFWwindow* window, double xoffset, double yoffset) override;
+    void DrawMenu() override;
 private:
     void renderQuad();
     void renderCube();

@@ -18,6 +18,7 @@ public:
     virtual void processKeyboard(GLFWwindow* window) {}
     virtual void processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) {}
     virtual void processScroll(GLFWwindow* window, double xoffset, double yoffset) {}
+    virtual void DrawMenu() {}
 };
 
 #endif
