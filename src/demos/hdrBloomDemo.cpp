@@ -187,45 +187,45 @@ void HdrBloomDemo::Draw(GLFWwindow* window)
     model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0));
     model = glm::scale(model, glm::vec3(12.5f, 0.5f, 12.5f));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
     // then create multiple cubes as the scenery
     glBindTexture(GL_TEXTURE_2D, containerTexture);
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
     model = glm::scale(model, glm::vec3(0.5f));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
     model = glm::scale(model, glm::vec3(0.5f));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-1.0f, -1.0f, 2.0));
     model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 2.7f, 4.0));
     model = glm::rotate(model, glm::radians(23.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
     model = glm::scale(model, glm::vec3(1.25));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-2.0f, 1.0f, -3.0));
     model = glm::rotate(model, glm::radians(124.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0));
     model = glm::scale(model, glm::vec3(0.5f));
     shader.setMat4("model", model);
-    renderCube();
+    RenderCube();
 
     // finally show all the light sources as bright cubes
     shaderLight.use();
@@ -239,7 +239,7 @@ void HdrBloomDemo::Draw(GLFWwindow* window)
         model = glm::scale(model, glm::vec3(0.25f));
         shaderLight.setMat4("model", model);
         shaderLight.setVec3("lightColor", lightColors[i]);
-        renderCube();
+        RenderCube();
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -252,7 +252,7 @@ void HdrBloomDemo::Draw(GLFWwindow* window)
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
         shaderBlur.setInt("horizontal", horizontal);
         glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
-        renderQuad();
+        RenderQuad();
         horizontal = !horizontal;
         if (first_iteration)
             first_iteration = false;
@@ -268,17 +268,17 @@ void HdrBloomDemo::Draw(GLFWwindow* window)
     glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
     shaderBloomFinal.setInt("bloom", bloom);
     shaderBloomFinal.setFloat("exposure", exposure);
-    renderQuad();
+    RenderQuad();
 }
 
-void HdrBloomDemo::renderCube()
+void HdrBloomDemo::RenderCube()
 {
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
 }
 
-void HdrBloomDemo::renderQuad()
+void HdrBloomDemo::RenderQuad()
 {
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -302,7 +302,7 @@ void HdrBloomDemo::Unload()
     glDeleteTextures(2, pingpongColorbuffers);
 }
 
-void HdrBloomDemo::processKeyboard(GLFWwindow *window)
+void HdrBloomDemo::ProcessKeyboard(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
@@ -324,12 +324,12 @@ void HdrBloomDemo::processKeyboard(GLFWwindow *window)
     }
 }
 
-void HdrBloomDemo::processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset)
+void HdrBloomDemo::ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset)
 {
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void HdrBloomDemo::processScroll(GLFWwindow* window, double xoffset, double yoffset)
+void HdrBloomDemo::ProcessScroll(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
 }

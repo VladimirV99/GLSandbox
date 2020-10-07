@@ -225,7 +225,7 @@ int main(int, char**)
         ImGui::Render();
 
         if(captureInput)
-            demo->processKeyboard(window);
+            demo->ProcessKeyboard(window);
 
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -267,10 +267,10 @@ static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    demo->processMouse(window, xpos, ypos, offsetX, offsetY);
+    demo->ProcessMouse(window, xpos, ypos, offsetX, offsetY);
 }
 
 static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    demo->processScroll(window, xoffset, yoffset);
+    demo->ProcessScroll(window, xoffset, yoffset);
 }

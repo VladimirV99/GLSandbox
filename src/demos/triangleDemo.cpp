@@ -94,7 +94,7 @@ void TriangleDemo::Draw(GLFWwindow* window)
     // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
-void TriangleDemo::processKeyboard(GLFWwindow *window)
+void TriangleDemo::ProcessKeyboard(GLFWwindow *window)
 {
     fillModePrev = fillMode;
     fillMode = glfwGetKey(window, GLFW_KEY_1);
@@ -116,4 +116,12 @@ void TriangleDemo::Unload()
     glDeleteBuffers(1, &vboHandles[2]);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+bool TriangleDemo::DrawMenu()
+{
+    ImGui::BulletText("Press 1 to enable fill mode");
+    ImGui::BulletText("Press 2 to enable line mode");
+
+    return true;
 }

@@ -110,7 +110,7 @@ void NormalMapDemo::Draw(GLFWwindow* window)
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, normalMap);
-    renderQuad();
+    RenderQuad();
 
     // render light source (simply re-renders a smaller plane at the light's position for debugging/visualization)
     // model = glm::mat4(1.0f);
@@ -120,7 +120,7 @@ void NormalMapDemo::Draw(GLFWwindow* window)
     // renderQuad();
 }
 
-void NormalMapDemo::renderQuad()
+void NormalMapDemo::RenderQuad()
 {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -136,7 +136,7 @@ void NormalMapDemo::Unload()
     glDeleteBuffers(1, &VBO);
 }
 
-void NormalMapDemo::processKeyboard(GLFWwindow *window)
+void NormalMapDemo::ProcessKeyboard(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
@@ -148,12 +148,20 @@ void NormalMapDemo::processKeyboard(GLFWwindow *window)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
-void NormalMapDemo::processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset)
+void NormalMapDemo::ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset)
 {
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void NormalMapDemo::processScroll(GLFWwindow* window, double xoffset, double yoffset)
+void NormalMapDemo::ProcessScroll(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
+}
+
+bool NormalMapDemo::DrawMenu()
+{
+    ImGui::BulletText("Press WASD to move");
+    ImGui::BulletText("Use the mouse to look around");
+
+    return true;
 }

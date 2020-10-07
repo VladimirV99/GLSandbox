@@ -3,6 +3,8 @@
 
 #include "demo.hpp"
 
+#include <imgui.h>
+
 class TriangleDemo: public Demo
 {
 public:
@@ -10,7 +12,8 @@ public:
     void Init(GLFWwindow* window) override;
     void Draw(GLFWwindow* window) override;
     void Unload() override;
-    void processKeyboard(GLFWwindow *window) override;
+    void ProcessKeyboard(GLFWwindow *window) override;
+    bool DrawMenu() override;
 private:
     int fillModePrev = GLFW_RELEASE, fillMode = GLFW_RELEASE;
     int lineModePrev = GLFW_RELEASE, lineMode = GLFW_RELEASE;
