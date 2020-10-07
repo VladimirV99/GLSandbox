@@ -10,8 +10,8 @@ HdrBloomDemo::HdrBloomDemo() :
 void HdrBloomDemo::Init(GLFWwindow* window)
 {
     // Load textures as SRGB
-    woodTexture      = load_texture("../assets/wood.png", true);
-    containerTexture = load_texture("../assets/container.png", true);
+    woodTexture      = loadTexture("../assets/wood.png", true);
+    containerTexture = loadTexture("../assets/container.png", true);
 
     // configure (floating point) framebuffers
     glGenFramebuffers(1, &hdrFBO);

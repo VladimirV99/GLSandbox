@@ -5,8 +5,8 @@ NormalMapDemo::NormalMapDemo() : shader("../assets/normalMap.vert.glsl", "../ass
 void NormalMapDemo::Init(GLFWwindow* window)
 {
     // Load textures
-    diffuseMap = load_texture("../assets/brickwall.jpg");
-    normalMap  = load_texture("../assets/brickwall_normal.jpg");
+    diffuseMap = loadTexture("../assets/brickwall.jpg");
+    normalMap  = loadTexture("../assets/brickwall_normal.jpg");
 
     // Shader configuration
     shader.use();

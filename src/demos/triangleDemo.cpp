@@ -96,15 +96,15 @@ void TriangleDemo::Draw(GLFWwindow* window)
 
 void TriangleDemo::processKeyboard(GLFWwindow *window)
 {
-    fill_mode_prev = fill_mode;
-    fill_mode = glfwGetKey(window, GLFW_KEY_1);
-    if(fill_mode != fill_mode_prev && fill_mode == GLFW_RELEASE)
+    fillModePrev = fillMode;
+    fillMode = glfwGetKey(window, GLFW_KEY_1);
+    if(fillMode != fillModePrev && fillMode == GLFW_RELEASE)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Wireframe mode
-    line_mode_prev = line_mode;
-    line_mode = glfwGetKey(window, GLFW_KEY_2);
-    if(line_mode != line_mode_prev && line_mode == GLFW_RELEASE)
+    lineModePrev = lineMode;
+    lineMode = glfwGetKey(window, GLFW_KEY_2);
+    if(lineMode != lineModePrev && lineMode == GLFW_RELEASE)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 

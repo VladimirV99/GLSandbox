@@ -12,18 +12,18 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-void glfw_error_callback(int error, const char* description)
+void glfwErrorCallback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
     exit(EXIT_FAILURE);
 }
 
-void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-GLuint load_texture(const std::string& path, bool gammaCorrection)
+GLuint loadTexture(const std::string& path, bool gammaCorrection)
 {
     GLuint textureId;
     glGenTextures(1, &textureId);

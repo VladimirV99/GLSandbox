@@ -12,8 +12,8 @@ public:
     void Unload() override;
     void processKeyboard(GLFWwindow *window) override;
 private:
-    int fill_mode_prev = GLFW_RELEASE, fill_mode = GLFW_RELEASE;
-    int line_mode_prev = GLFW_RELEASE, line_mode = GLFW_RELEASE;
+    int fillModePrev = GLFW_RELEASE, fillMode = GLFW_RELEASE;
+    int lineModePrev = GLFW_RELEASE, lineMode = GLFW_RELEASE;
 
     Shader shader;
     GLuint vaoHandle;

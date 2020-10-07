@@ -5,7 +5,7 @@ BoxesDemo::BoxesDemo() : shader("../assets/boxes.vert.glsl", "../assets/boxes.fr
 void BoxesDemo::Init(GLFWwindow* window)
 {
     // Load texture
-    texture = load_texture("../assets/wall.jpg");
+    texture = loadTexture("../assets/wall.jpg");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------

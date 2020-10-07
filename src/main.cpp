@@ -13,8 +13,8 @@
 #include "demos/normalMapDemo.hpp"
 #include "demos/hdrBloomDemo.hpp"
 
-static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos);
-static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos);
+static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 Demo *demo = nullptr;
 
@@ -56,7 +56,7 @@ void switchDemo(Demo *d, GLFWwindow* window)
 int main(int, char**)
 {
     // Setup window
-    glfwSetErrorCallback(glfw_error_callback);
+    glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit())
         return 1;
 
@@ -74,9 +74,9 @@ int main(int, char**)
         return 1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, glfw_mouse_callback);
-    glfwSetScrollCallback(window, glfw_scroll_callback);
+    glfwSetFramebufferSizeCallback(window, glfwFramebufferSizeCallback);
+    glfwSetCursorPosCallback(window, glfwMouseCallback);
+    glfwSetScrollCallback(window, glfwScrollCallback);
     glfwSwapInterval(1); // Enable vsync
 
     // tell GLFW to capture our mouse
@@ -128,13 +128,12 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
-    int capture_input_key_prev = GLFW_RELEASE;
-    int capture_input_key = GLFW_RELEASE;
-    bool capture_input = true;
+    bool captureInputKeyPressed = false;
+    bool captureInput = true;
 
     // Our state
-    bool show_demo_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    bool showDemoWindow = false;
+    ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     demo = new TriangleDemo();
     demo->Init(window);
@@ -153,19 +152,20 @@ int main(int, char**)
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
+        // Input handlers
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
-        capture_input_key_prev = capture_input_key;
-        capture_input_key  = glfwGetKey(window, GLFW_KEY_F);
-        if(capture_input_key != capture_input_key_prev && capture_input_key == GLFW_RELEASE)
+        
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !captureInputKeyPressed)
         {
-            capture_input = !capture_input;
-            if(capture_input)
+            captureInput = !captureInput;
+            captureInputKeyPressed = true;
+            if(captureInput)
             {
                 firstMouse = true;
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                glfwSetCursorPosCallback(window, glfw_mouse_callback);
-                glfwSetScrollCallback(window, glfw_scroll_callback);
+                glfwSetCursorPosCallback(window, glfwMouseCallback);
+                glfwSetScrollCallback(window, glfwScrollCallback);
                 io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
             }
             else
@@ -176,14 +176,18 @@ int main(int, char**)
                 io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
             }
         }
+        else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE)
+        {
+            captureInputKeyPressed = false;
+        }
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
+        if (showDemoWindow)
+            ImGui::ShowDemoWindow(&showDemoWindow);
 
         // Init ImGui window
         {
@@ -191,8 +195,8 @@ int main(int, char**)
 
             ImGui::Text("Press F to toggle input capture");
 
-            ImGui::Checkbox("Demo Window", &show_demo_window);
-            ImGui::ColorEdit3("clear color", (float*)&clear_color);
+            ImGui::Checkbox("Demo Window", &showDemoWindow);
+            ImGui::ColorEdit3("clear color", (float*)&clearColor);
 
             ImGui::Separator();
 
@@ -220,10 +224,10 @@ int main(int, char**)
         // Rendering
         ImGui::Render();
 
-        if(capture_input)
+        if(captureInput)
             demo->processKeyboard(window);
 
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         demo->Draw(window);
@@ -248,7 +252,7 @@ int main(int, char**)
     return 0;
 }
 
-static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos)
+static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse)
     {
@@ -266,7 +270,7 @@ static void glfw_mouse_callback(GLFWwindow* window, double xpos, double ypos)
     demo->processMouse(window, xpos, ypos, offsetX, offsetY);
 }
 
-static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     demo->processScroll(window, xoffset, yoffset);
 }
