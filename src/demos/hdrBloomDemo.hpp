@@ -29,17 +29,19 @@ private:
     Camera camera = Camera(glm::vec3(0.0f, 0.0f, 5.0f));
 
     // lighting
-    glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
+    std::vector<glm::vec3> lightPositions;
+    std::vector<glm::vec3> lightColors;
 
     unsigned int quadVBO, quadVAO = 0;
     unsigned int cubeVBO, cubeVAO = 0;
-    unsigned int hdrFBO;
     unsigned int woodTexture, containerTexture;
+    unsigned int hdrFBO;
+    unsigned int colorBuffers[2];
+    unsigned int pingpongFBO[2];
+    unsigned int pingpongColorbuffers[2];
 
     bool bloom = true, bloomKeyPressed = false;
-
     float exposure = 1.0f;
-
 };
 
 #endif
