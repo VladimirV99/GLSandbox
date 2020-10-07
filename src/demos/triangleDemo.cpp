@@ -94,17 +94,17 @@ void TriangleDemo::Draw(GLFWwindow* window)
     // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
-void TriangleDemo::processKeyboard(GLFWwindow *window)
+void TriangleDemo::ProcessKeyboard(GLFWwindow *window)
 {
-    fill_mode_prev = fill_mode;
-    fill_mode = glfwGetKey(window, GLFW_KEY_1);
-    if(fill_mode != fill_mode_prev && fill_mode == GLFW_RELEASE)
+    fillModePrev = fillMode;
+    fillMode = glfwGetKey(window, GLFW_KEY_1);
+    if(fillMode != fillModePrev && fillMode == GLFW_RELEASE)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Wireframe mode
-    line_mode_prev = line_mode;
-    line_mode = glfwGetKey(window, GLFW_KEY_2);
-    if(line_mode != line_mode_prev && line_mode == GLFW_RELEASE)
+    lineModePrev = lineMode;
+    lineMode = glfwGetKey(window, GLFW_KEY_2);
+    if(lineMode != lineModePrev && lineMode == GLFW_RELEASE)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
@@ -116,4 +116,12 @@ void TriangleDemo::Unload()
     glDeleteBuffers(1, &vboHandles[2]);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+bool TriangleDemo::DrawMenu()
+{
+    ImGui::BulletText("Press 1 to enable fill mode");
+    ImGui::BulletText("Press 2 to enable line mode");
+
+    return true;
 }

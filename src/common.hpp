@@ -22,9 +22,9 @@ extern float lastX;
 extern float lastY;
 extern bool firstMouse;
 
-extern void glfw_error_callback(int error, const char* description);
-extern void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
+extern void glfwErrorCallback(int error, const char* description);
+extern void glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height);
 
-extern GLuint load_texture(const std::string& path);
+extern GLuint loadTexture(const std::string& path, bool gammaCorrection = false);
 
 #endif

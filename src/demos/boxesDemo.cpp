@@ -5,7 +5,7 @@ BoxesDemo::BoxesDemo() : shader("../assets/boxes.vert.glsl", "../assets/boxes.fr
 void BoxesDemo::Init(GLFWwindow* window)
 {
     // Load texture
-    texture = load_texture("../assets/wall.jpg");
+    texture = loadTexture("../assets/wall.jpg");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -144,7 +144,7 @@ void BoxesDemo::Unload()
     glDeleteBuffers(1, &VBO);
 }
 
-void BoxesDemo::processKeyboard(GLFWwindow *window)
+void BoxesDemo::ProcessKeyboard(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
@@ -156,12 +156,20 @@ void BoxesDemo::processKeyboard(GLFWwindow *window)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
-void BoxesDemo::processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset)
+void BoxesDemo::ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset)
 {
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void BoxesDemo::processScroll(GLFWwindow* window, double xoffset, double yoffset)
+void BoxesDemo::ProcessScroll(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
+}
+
+bool BoxesDemo::DrawMenu()
+{
+    ImGui::BulletText("Press WASD to move");
+    ImGui::BulletText("Use the mouse to look around");
+
+    return true;
 }
