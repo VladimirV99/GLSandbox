@@ -20,7 +20,7 @@ public:
     void processKeyboard(GLFWwindow *window) override;
     void processMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
     void processScroll(GLFWwindow* window, double xoffset, double yoffset) override;
-    void DrawMenu() override;
+    bool DrawMenu() override;
 private:
     void renderQuad();
     void renderCube();

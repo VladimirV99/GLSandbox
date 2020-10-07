@@ -133,7 +133,7 @@ int main(int, char**)
     bool capture_input = true;
 
     // Our state
-    bool show_demo_window = true;
+    bool show_demo_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     demo = new TriangleDemo();
@@ -210,9 +210,8 @@ int main(int, char**)
 
             ImGui::Separator();
 
-            demo->DrawMenu();
-
-            ImGui::Separator();
+            if(demo->DrawMenu())
+                ImGui::Separator();
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();

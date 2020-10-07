@@ -334,7 +334,7 @@ void HdrBloomDemo::processScroll(GLFWwindow* window, double xoffset, double yoff
     camera.ProcessMouseScroll(yoffset);
 }
 
-void HdrBloomDemo::DrawMenu()
+bool HdrBloomDemo::DrawMenu()
 {
     ImGui::BulletText("Press WASD to move");
     ImGui::BulletText("Use the mouse to look around");
@@ -343,4 +343,6 @@ void HdrBloomDemo::DrawMenu()
     ImGui::Checkbox("bloom", &bloom);
 
     ImGui::SliderFloat("exposure", &exposure, -2.0f, 2.0f);
+
+    return true;
 }
