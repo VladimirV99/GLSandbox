@@ -18,10 +18,8 @@ Make a directory for the libraries and navigate to it.
 mkdir libs
 cd libs
 ```
-
-Add glad to the libs directory by extracting the generated C/C++ OpenGL Core profile files from https://glad.dav1d.de/.
-In this project, OpenGL version 4.2 is used.
-Then add other modules using git
+Add glad to the libs directory by extracting the generated C/C++ OpenGL Core profile files from https://glad.dav1d.de/. In this project, OpenGL version 4.2 is used.
+Next, add other libraries as submodules using git
 ```bash
 git submodule add https://github.com/glfw/glfw.git
 git submodule add https://github.com/g-truc/glm.git
@@ -29,9 +27,7 @@ git submodule add https://github.com/ocornut/imgui.git
 git submodule add https://github.com/nothings/stb.git
 git submodule add https://github.com/assimp/assimp.git
 ```
-
-Finally copy the CMakeLists.txt file and all cmake files from this projects libs directory to your own.
-To use the libraries just include the libs CMakeLists file in your project CMake configuration.
+Finally copy the CMakeLists.txt file and all cmake files from this projects libs directory to your own. To use the libraries just include the libs CMakeLists file in your project CMake configuration.
 
 ## Updating libraries
 
@@ -43,6 +39,7 @@ git checkout master
 git pull
 cd ../..
 ```
+
 After updating, the changes should be commited to the repository
 
 ## License
