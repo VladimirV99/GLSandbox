@@ -32,7 +32,7 @@ public:
     void setMat4(const std::string& name, glm::mat4& value) const;
 private:
     std::string loadAsString(const std::string& path);
-    GLuint compile_shader(const std::string& path, GLenum type);
+    GLuint compileShader(const std::string& path, GLenum type);
     GLuint createProgram(const char* vertexPath, const char* fragmentPath);
 };
 

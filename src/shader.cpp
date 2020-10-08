@@ -7,6 +7,11 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 
 std::string Shader::loadAsString(const std::string& path) {
     std::ifstream in(path);
+    if(!in.is_open())
+    {
+        std::cout << "Error opening file " << path << std::endl;
+        exit(EXIT_FAILURE);
+    }
     in.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     try
     {
@@ -23,7 +28,7 @@ std::string Shader::loadAsString(const std::string& path) {
     return "";
 }
 
-GLuint Shader::compile_shader(const std::string& path, GLenum type) {
+GLuint Shader::compileShader(const std::string& path, GLenum type) {
     GLuint shader = glCreateShader(type); 
     if(0 == shader) { 
         std::cerr << "Error creating shader!" << std::endl;
@@ -67,8 +72,8 @@ GLuint Shader::createProgram(const char* vertexPath, const char* fragmentPath) {
     }
 
     // Compile shaders
-    GLuint vertShader = compile_shader(vertexPath, GL_VERTEX_SHADER);
-    GLuint fragShader = compile_shader(fragmentPath, GL_FRAGMENT_SHADER);
+    GLuint vertShader = compileShader(vertexPath, GL_VERTEX_SHADER);
+    GLuint fragShader = compileShader(fragmentPath, GL_FRAGMENT_SHADER);
 
     // Attach the shaders to the program object as follows:
     glAttachShader(programHandle, vertShader); 
