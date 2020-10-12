@@ -11,6 +11,29 @@ Environment for developing OpenGL applications with pre-installed libraries and 
 - [imgui](https://github.com/ocornut/imgui) - Bloat-free graphical user interface library for C++
 - [stb_image](https://github.com/nothings/stb) - Image loading/decoding library
 
+## Usage instructions
+
+Clone the project (with submodules) to your computer and navigate to it
+```bash
+git clone --recurse-submodules --jobs 8 https://github.com/VladimirV99/GLSandbox.git
+cd GLSandbox
+```
+Generate project files for your platform
+
+### Windows (VS2019)
+
+Generate project files for Visual Studio 2019
+```bash
+cmake -G "Visual Studio 16 2019"
+```
+
+### Linux (Makefile)
+
+Generate Makefiles for the project and libraries
+```bash
+cmake .
+```
+
 ## Adding libraries from scratch
 
 Make a directory for the libraries and navigate to it.
