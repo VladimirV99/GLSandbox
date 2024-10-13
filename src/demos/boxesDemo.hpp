@@ -7,8 +7,8 @@
 #include <imgui.h>
 
 #include "demo.hpp"
-#include "../common.hpp"
 #include "../camera.hpp"
+#include "../shader.hpp"
 
 class BoxesDemo: public Demo
 {

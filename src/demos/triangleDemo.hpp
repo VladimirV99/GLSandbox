@@ -1,9 +1,10 @@
 #ifndef TRIANGLEDEMO_H
 #define TRIANGLEDEMO_H
 
-#include "demo.hpp"
-
 #include <imgui.h>
+
+#include "demo.hpp"
+#include "../shader.hpp"
 
 class TriangleDemo: public Demo
 {

@@ -1,5 +1,7 @@
 #include "boxesDemo.hpp"
 
+#include "../common.hpp"
+
 BoxesDemo::BoxesDemo() : shader("../assets/boxes.vert.glsl", "../assets/boxes.frag.glsl") { }
 
 void BoxesDemo::Init(GLFWwindow* window)

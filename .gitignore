@@ -45,6 +45,9 @@ bld/
 # Static Libraries
 *.a
 
+# .clangd cache
+.cache/
+
 # Build directory
 build/
 

@@ -1,5 +1,7 @@
 #include "hdrBloomDemo.hpp"
 
+#include "../common.hpp"
+
 HdrBloomDemo::HdrBloomDemo() :
     shader("../assets/hdrBloom.vert.glsl", "../assets/hdrBloom.frag.glsl"),
     shaderLight("../assets/hdrBloom.vert.glsl", "../assets/lightBox.frag.glsl"),

@@ -1,5 +1,7 @@
 #include "normalMapDemo.hpp"
 
+#include "../common.hpp"
+
 NormalMapDemo::NormalMapDemo() : shader("../assets/normalMap.vert.glsl", "../assets/normalMap.frag.glsl") { }
 
 void NormalMapDemo::Init(GLFWwindow* window)
