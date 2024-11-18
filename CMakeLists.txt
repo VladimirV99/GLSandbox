@@ -15,6 +15,7 @@ set(SOURCES
     "${SRC_PATH}/camera.cpp"
     "${SRC_PATH}/demos/triangleDemo.cpp"
     "${SRC_PATH}/demos/boxesDemo.cpp"
+    "${SRC_PATH}/demos/mandelbrotDemo.cpp"
     "${SRC_PATH}/demos/normalMapDemo.cpp"
     "${SRC_PATH}/demos/hdrBloomDemo.cpp"
 )

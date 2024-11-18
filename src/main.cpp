@@ -9,6 +9,7 @@
 
 #include "common.hpp"
 #include "demos/demo.hpp"
+#include "demos/mandelbrotDemo.hpp"
 #include "demos/triangleDemo.hpp"
 #include "demos/boxesDemo.hpp"
 #include "demos/normalMapDemo.hpp"
@@ -232,6 +233,9 @@ int main(int, char**)
             if (ImGui::Button("HDR Bloom Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
                 switchDemo(new HdrBloomDemo(), window);
 
+            if (ImGui::Button("Mandelbrot Demo", ImVec2(ImGui::GetWindowSize().x, 0.0f)))
+                switchDemo(new MandelbrotDemo(), window);
+
             ImGui::Separator();
 
             if(demo->DrawMenu())
@@ -297,6 +301,6 @@ static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffse
 {
     if (!captureInput)
         return;
-    
+
     demo->ProcessScroll(window, xoffset, yoffset);
 }
