@@ -10,20 +10,12 @@ set(LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libs")
 set(BUILD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
 set(SOURCES 
 	"${SRC_PATH}/main.cpp"
-    "${SRC_PATH}/common.hpp"
     "${SRC_PATH}/common.cpp"
-    "${SRC_PATH}/shader.hpp"
     "${SRC_PATH}/shader.cpp"
-    "${SRC_PATH}/camera.hpp"
     "${SRC_PATH}/camera.cpp"
-    "${SRC_PATH}/demos/demo.hpp"
-    "${SRC_PATH}/demos/triangleDemo.hpp"
     "${SRC_PATH}/demos/triangleDemo.cpp"
-    "${SRC_PATH}/demos/boxesDemo.hpp"
     "${SRC_PATH}/demos/boxesDemo.cpp"
-    "${SRC_PATH}/demos/normalMapDemo.hpp"
     "${SRC_PATH}/demos/normalMapDemo.cpp"
-    "${SRC_PATH}/demos/hdrBloomDemo.hpp"
     "${SRC_PATH}/demos/hdrBloomDemo.cpp"
 )
 
@@ -41,4 +33,4 @@ set(VS_STARTUP_PROJECT ${PROJECT_NAME})
 
 # Dependencies
 add_subdirectory("${LIB_PATH}")
-target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw imgui glm stb assimp)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw imgui glm stb assimp spdlog)

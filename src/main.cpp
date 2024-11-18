@@ -3,8 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <spdlog/spdlog.h>
 
 #include "common.hpp"
 #include "demos/demo.hpp"
@@ -21,28 +22,29 @@ Demo *demo = nullptr;
 static void printDebugInfo()
 {
     // Print graphics driver vendor and OpenGL information
-    const GLubyte *renderer = glGetString( GL_RENDERER ); 
-    const GLubyte *vendor = glGetString( GL_VENDOR ); 
-    const GLubyte *version = glGetString( GL_VERSION ); 
-    const GLubyte *glslVersion = 
-        glGetString( GL_SHADING_LANGUAGE_VERSION ); 
+    const char *renderer = (char *)glGetString( GL_RENDERER ); 
+    const char *vendor = (char *)glGetString( GL_VENDOR ); 
+    const char *version = (char *)glGetString( GL_VERSION ); 
+    const char *glslVersion = 
+        (char *)glGetString( GL_SHADING_LANGUAGE_VERSION ); 
     
     GLint major, minor; 
     glGetIntegerv(GL_MAJOR_VERSION, &major); 
     glGetIntegerv(GL_MINOR_VERSION, &minor);
     
-    printf("GL Vendor            : %s\n", vendor); 
-    printf("GL Renderer          : %s\n", renderer); 
-    printf("GL Version (string)  : %s\n", version); 
-    printf("GL Version (integer) : %d.%d\n", major, minor); 
-    printf("GLSL Version         : %s\n", glslVersion);
+    spdlog::debug("GL Vendor            : {}", vendor); 
+    spdlog::debug("GL Renderer          : {}", renderer); 
+    spdlog::debug("GL Version (string)  : {}", version); 
+    spdlog::debug("GL Version (integer) : {}.{}", major, minor); 
+    spdlog::debug("GLSL Version         : {}", glslVersion);
 
     // Extension information
     GLint nExtensions; 
     glGetIntegerv(GL_NUM_EXTENSIONS, &nExtensions); 
     
+    spdlog::debug("GL Extensions:");
     for( int i = 0; i < nExtensions; i++ ) 
-        printf("%s\n", glGetStringi( GL_EXTENSIONS, i ) );
+        spdlog::debug("\t{}", (char *)glGetStringi( GL_EXTENSIONS, i ) );
 }
 
 void switchDemo(Demo *d, GLFWwindow* window)
@@ -55,6 +57,8 @@ void switchDemo(Demo *d, GLFWwindow* window)
 
 int main(int, char**)
 {
+    spdlog::set_level(spdlog::level::debug);
+
     // Setup window
     glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit())
@@ -89,6 +93,7 @@ int main(int, char**)
         fprintf(stderr, "Failed to initialize OpenGL loader!\n");
         return 1;
     }
+    // printDebugInfo();
 
     stbi_set_flip_vertically_on_load(true);
 
