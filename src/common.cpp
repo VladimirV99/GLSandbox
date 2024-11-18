@@ -1,6 +1,6 @@
-#include <iostream>
-
 #include "common.hpp"
+
+#include "spdlog/spdlog.h"
 
 GLuint loadTexture(const std::string& path, bool gammaCorrection)
 {
@@ -43,7 +43,7 @@ GLuint loadTexture(const std::string& path, bool gammaCorrection)
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        spdlog::error("Texture failed to load at path: {}", path);
         stbi_image_free(data);
     }
 
