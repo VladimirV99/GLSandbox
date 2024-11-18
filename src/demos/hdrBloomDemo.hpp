@@ -15,9 +15,9 @@ class HdrBloomDemo: public Demo
 public:
     HdrBloomDemo();
     void Init(GLFWwindow* window) override;
-    void Draw(GLFWwindow* window) override;
+    void Draw(GLFWwindow* window, float deltaTime) override;
     void Unload() override;
-    void ProcessKeyboard(GLFWwindow *window) override;
+    void ProcessKeyboard(GLFWwindow *window, float deltaTime) override;
     void ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
     void ProcessScroll(GLFWwindow* window, double xoffset, double yoffset) override;
     bool DrawMenu() override;

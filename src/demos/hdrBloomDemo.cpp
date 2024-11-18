@@ -164,7 +164,7 @@ void HdrBloomDemo::Init(GLFWwindow* window)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
-void HdrBloomDemo::Draw(GLFWwindow* window)
+void HdrBloomDemo::Draw(GLFWwindow* window, float deltaTime)
 {
     // render scene into floating point framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
@@ -304,7 +304,7 @@ void HdrBloomDemo::Unload()
     glDeleteTextures(2, pingpongColorbuffers);
 }
 
-void HdrBloomDemo::ProcessKeyboard(GLFWwindow *window)
+void HdrBloomDemo::ProcessKeyboard(GLFWwindow *window, float deltaTime)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);

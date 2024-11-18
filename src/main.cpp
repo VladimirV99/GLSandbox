@@ -18,6 +18,15 @@ static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos);
 static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 Demo *demo = nullptr;
+bool captureInput = true;
+
+// timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
 
 static void printDebugInfo()
 {
@@ -53,6 +62,17 @@ void switchDemo(Demo *d, GLFWwindow* window)
     delete demo;
     demo = d;
     demo->Init(window);
+}
+
+static void glfwErrorCallback(int error, const char* description)
+{
+    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+    exit(EXIT_FAILURE);
+}
+
+static void glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
 }
 
 int main(int, char**)
@@ -105,7 +125,7 @@ int main(int, char**)
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -134,7 +154,6 @@ int main(int, char**)
     //IM_ASSERT(font != NULL);
 
     bool captureInputKeyPressed = false;
-    bool captureInput = true;
 
     // Our state
     bool showDemoWindow = false;
@@ -169,15 +188,11 @@ int main(int, char**)
             {
                 firstMouse = true;
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                glfwSetCursorPosCallback(window, glfwMouseCallback);
-                glfwSetScrollCallback(window, glfwScrollCallback);
                 io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
             }
             else
             {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                glfwSetCursorPosCallback(window, NULL);
-                glfwSetScrollCallback(window, NULL);
                 io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
             }
         }
@@ -230,12 +245,12 @@ int main(int, char**)
         ImGui::Render();
 
         if(captureInput)
-            demo->ProcessKeyboard(window);
+            demo->ProcessKeyboard(window, deltaTime);
 
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        demo->Draw(window);
+        demo->Draw(window, deltaTime);
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -259,6 +274,9 @@ int main(int, char**)
 
 static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
+    if (!captureInput)
+        return;
+    
     if (firstMouse)
     {
         lastX = xpos;
@@ -277,5 +295,8 @@ static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
+    if (!captureInput)
+        return;
+    
     demo->ProcessScroll(window, xoffset, yoffset);
 }

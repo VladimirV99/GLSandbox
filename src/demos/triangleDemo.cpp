@@ -76,7 +76,7 @@ void TriangleDemo::Init(GLFWwindow* window)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-void TriangleDemo::Draw(GLFWwindow* window)
+void TriangleDemo::Draw(GLFWwindow* window, float deltaTime)
 {
     shader.use();
 
@@ -94,7 +94,7 @@ void TriangleDemo::Draw(GLFWwindow* window)
     // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
-void TriangleDemo::ProcessKeyboard(GLFWwindow *window)
+void TriangleDemo::ProcessKeyboard(GLFWwindow *window, float deltaTime)
 {
     fillModePrev = fillMode;
     fillMode = glfwGetKey(window, GLFW_KEY_1);

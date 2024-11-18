@@ -2,27 +2,6 @@
 
 #include "common.hpp"
 
-const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 720;
-
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
-
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = true;
-
-void glfwErrorCallback(int error, const char* description)
-{
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-    exit(EXIT_FAILURE);
-}
-
-void glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
 GLuint loadTexture(const std::string& path, bool gammaCorrection)
 {
     GLuint textureId;

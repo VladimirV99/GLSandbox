@@ -95,7 +95,7 @@ void NormalMapDemo::Init(GLFWwindow* window)
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
 }
 
-void NormalMapDemo::Draw(GLFWwindow* window)
+void NormalMapDemo::Draw(GLFWwindow* window, float deltaTime)
 {
     // configure view/projection matrices
     glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -138,7 +138,7 @@ void NormalMapDemo::Unload()
     glDeleteBuffers(1, &VBO);
 }
 
-void NormalMapDemo::ProcessKeyboard(GLFWwindow *window)
+void NormalMapDemo::ProcessKeyboard(GLFWwindow *window, float deltaTime)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);

@@ -82,7 +82,7 @@ void BoxesDemo::Init(GLFWwindow* window)
     shader.setVec3("viewPos", camera.getPosition());
 }
 
-void BoxesDemo::Draw(GLFWwindow* window)
+void BoxesDemo::Draw(GLFWwindow* window, float deltaTime)
 {    
     // world space positions of our cubes
     glm::vec3 cubePositions[] = {
@@ -146,7 +146,7 @@ void BoxesDemo::Unload()
     glDeleteBuffers(1, &VBO);
 }
 
-void BoxesDemo::ProcessKeyboard(GLFWwindow *window)
+void BoxesDemo::ProcessKeyboard(GLFWwindow *window, float deltaTime)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
