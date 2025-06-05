@@ -1,6 +1,6 @@
 #include "common.hpp"
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 GLuint loadTexture(const std::string& path, bool gammaCorrection)
 {
@@ -9,7 +9,7 @@ GLuint loadTexture(const std::string& path, bool gammaCorrection)
 
     // load the texture
     int width, height, nrChannels;
-    unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
         GLenum internalFormat;
@@ -31,7 +31,8 @@ GLuint loadTexture(const std::string& path, bool gammaCorrection)
 
         // generate the texture
         glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat,
+                     GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

@@ -6,24 +6,27 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
+#include "camera.hpp"
 #include "demo.hpp"
-#include "../camera.hpp"
-#include "../shader.hpp"
+#include "shader.hpp"
 
-class NormalMapDemo: public Demo
+class NormalMapDemo : public Demo
 {
-public:
+  public:
     NormalMapDemo();
     void Init(GLFWwindow* window) override;
     void Draw(GLFWwindow* window, float deltaTime) override;
     void Unload() override;
-    void ProcessKeyboard(GLFWwindow *window, float deltaTime) override;
-    void ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
+    void ProcessKeyboard(GLFWwindow* window, float deltaTime) override;
+    void ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset,
+                      double yoffset) override;
     void ProcessScroll(GLFWwindow* window, double xoffset, double yoffset) override;
     bool DrawMenu() override;
-private:
+
+  private:
     void RenderQuad();
-private:
+
+  private:
     Shader shader;
 
     // camera

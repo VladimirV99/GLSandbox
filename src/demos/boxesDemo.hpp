@@ -6,22 +6,24 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
+#include "camera.hpp"
 #include "demo.hpp"
-#include "../camera.hpp"
-#include "../shader.hpp"
+#include "shader.hpp"
 
-class BoxesDemo: public Demo
+class BoxesDemo : public Demo
 {
-public:
+  public:
     BoxesDemo();
     void Init(GLFWwindow* window) override;
     void Draw(GLFWwindow* window, float deltaTime) override;
     void Unload() override;
-    void ProcessKeyboard(GLFWwindow *window, float deltaTime) override;
-    void ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset, double yoffset) override;
+    void ProcessKeyboard(GLFWwindow* window, float deltaTime) override;
+    void ProcessMouse(GLFWwindow* window, double xpos, double ypos, double xoffset,
+                      double yoffset) override;
     void ProcessScroll(GLFWwindow* window, double xoffset, double yoffset) override;
     bool DrawMenu() override;
-private:
+
+  private:
     Shader shader;
 
     // camera

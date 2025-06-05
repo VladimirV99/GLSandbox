@@ -1,11 +1,10 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <string>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
+#include <string>
 
 // settings
 #define SCR_WIDTH 1280

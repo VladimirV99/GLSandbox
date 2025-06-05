@@ -1,24 +1,22 @@
-#include <iostream>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <spdlog/spdlog.h>
+#include <imgui.h>
 
 #include "common.hpp"
-#include "demos/demo.hpp"
-#include "demos/mandelbrotDemo.hpp"
-#include "demos/triangleDemo.hpp"
 #include "demos/boxesDemo.hpp"
-#include "demos/normalMapDemo.hpp"
+#include "demos/demo.hpp"
 #include "demos/hdrBloomDemo.hpp"
+#include "demos/mandelbrotDemo.hpp"
+#include "demos/normalMapDemo.hpp"
+#include "demos/triangleDemo.hpp"
 
 static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos);
 static void glfwScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-Demo *demo = nullptr;
+Demo* demo = nullptr;
 bool captureInput = true;
 
 // timing
@@ -32,32 +30,31 @@ bool firstMouse = true;
 static void printDebugInfo()
 {
     // Print graphics driver vendor and OpenGL information
-    const char *renderer = (char *)glGetString( GL_RENDERER ); 
-    const char *vendor = (char *)glGetString( GL_VENDOR ); 
-    const char *version = (char *)glGetString( GL_VERSION ); 
-    const char *glslVersion = 
-        (char *)glGetString( GL_SHADING_LANGUAGE_VERSION ); 
-    
-    GLint major, minor; 
-    glGetIntegerv(GL_MAJOR_VERSION, &major); 
+    const char* renderer = (char*)glGetString(GL_RENDERER);
+    const char* vendor = (char*)glGetString(GL_VENDOR);
+    const char* version = (char*)glGetString(GL_VERSION);
+    const char* glslVersion = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    GLint major, minor;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-    
-    spdlog::debug("GL Vendor            : {}", vendor); 
-    spdlog::debug("GL Renderer          : {}", renderer); 
-    spdlog::debug("GL Version (string)  : {}", version); 
-    spdlog::debug("GL Version (integer) : {}.{}", major, minor); 
+
+    spdlog::debug("GL Vendor            : {}", vendor);
+    spdlog::debug("GL Renderer          : {}", renderer);
+    spdlog::debug("GL Version (string)  : {}", version);
+    spdlog::debug("GL Version (integer) : {}.{}", major, minor);
     spdlog::debug("GLSL Version         : {}", glslVersion);
 
     // Extension information
-    GLint nExtensions; 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &nExtensions); 
-    
+    GLint nExtensions;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &nExtensions);
+
     spdlog::debug("GL Extensions:");
-    for( int i = 0; i < nExtensions; i++ ) 
-        spdlog::debug("\t{}", (char *)glGetStringi( GL_EXTENSIONS, i ) );
+    for (int i = 0; i < nExtensions; i++)
+        spdlog::debug("\t{}", (char*)glGetStringi(GL_EXTENSIONS, i));
 }
 
-void switchDemo(Demo *d, GLFWwindow* window)
+void switchDemo(Demo* d, GLFWwindow* window)
 {
     demo->Unload();
     delete demo;
@@ -92,9 +89,11 @@ int main(int, char**)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create window with graphics context
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL3+GLFW+GLAD+GLM+ImGui example", NULL, NULL);
-    if (window == NULL) {
-        std::cout << "Failed to create GLFW window" << std::endl;
+    GLFWwindow* window =
+        glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL3+GLFW+GLAD+GLM+ImGui example", NULL, NULL);
+    if (window == NULL)
+    {
+        spdlog::error("Failed to create GLFW window");
         glfwTerminate();
         return 1;
     }
@@ -128,31 +127,13 @@ int main(int, char**)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
 
     bool captureInputKeyPressed = false;
 
@@ -171,21 +152,17 @@ int main(int, char**)
         lastFrame = currentFrame;
 
         // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
         // Input handlers
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
-        
+
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !captureInputKeyPressed)
         {
             captureInput = !captureInput;
             captureInputKeyPressed = true;
-            if(captureInput)
+            if (captureInput)
             {
                 firstMouse = true;
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -238,17 +215,18 @@ int main(int, char**)
 
             ImGui::Separator();
 
-            if(demo->DrawMenu())
+            if (demo->DrawMenu())
                 ImGui::Separator();
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
         }
 
         // Rendering
         ImGui::Render();
 
-        if(captureInput)
+        if (captureInput)
             demo->ProcessKeyboard(window, deltaTime);
 
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
@@ -280,7 +258,7 @@ static void glfwMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
     if (!captureInput)
         return;
-    
+
     if (firstMouse)
     {
         lastX = xpos;

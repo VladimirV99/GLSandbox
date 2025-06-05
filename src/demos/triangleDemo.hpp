@@ -4,24 +4,25 @@
 #include <imgui.h>
 
 #include "demo.hpp"
-#include "../shader.hpp"
+#include "shader.hpp"
 
-class TriangleDemo: public Demo
+class TriangleDemo : public Demo
 {
-public:
+  public:
     TriangleDemo();
     void Init(GLFWwindow* window) override;
     void Draw(GLFWwindow* window, float deltaTime) override;
     void Unload() override;
-    void ProcessKeyboard(GLFWwindow *window, float deltaTime) override;
+    void ProcessKeyboard(GLFWwindow* window, float deltaTime) override;
     bool DrawMenu() override;
-private:
+
+  private:
     int fillModePrev = GLFW_RELEASE, fillMode = GLFW_RELEASE;
     int lineModePrev = GLFW_RELEASE, lineMode = GLFW_RELEASE;
 
     Shader shader;
     GLuint vaoHandle;
-    GLuint vboHandles[3]; 
+    GLuint vboHandles[3];
     unsigned int EBO;
 };
 
